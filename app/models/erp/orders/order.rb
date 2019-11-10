@@ -252,6 +252,11 @@ module Erp::Orders
 
 			end
       # end// global filter
+      
+      # lay danh sach don hang cua khach hang ma nhan vien phu trach
+      if params[:customer_saleperson_id].present?
+        query = query.where(erp_contacts_contacts: {salesperson_id: params[:customer_saleperson_id]})
+      end
 
       # single keyword
       if params[:keyword].present?
@@ -266,6 +271,11 @@ module Erp::Orders
     end
 
     def self.search(params)
+      page = params[:page].to_i
+      per_page = params[:per_page].to_i
+      offset = (page > 0 ? (page-1)*per_page : 0)
+      limit = per_page
+      
       query = self.all
       query = self.filter(query, params)
 
@@ -278,7 +288,7 @@ module Erp::Orders
       else
 				query = query.order('erp_orders_orders.created_at DESC')
       end
-
+      query = query.limit(limit).offset(offset)
       return query
     end
 
