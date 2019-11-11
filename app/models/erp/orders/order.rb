@@ -271,11 +271,6 @@ module Erp::Orders
     end
 
     def self.search(params)
-      page = params[:page].to_i
-      per_page = params[:per_page].to_i
-      offset = (page > 0 ? (page-1)*per_page : 0)
-      limit = per_page
-      
       query = self.all
       query = self.filter(query, params)
 
@@ -288,7 +283,17 @@ module Erp::Orders
       else
 				query = query.order('erp_orders_orders.created_at DESC')
       end
-      query = query.limit(limit).offset(offset)
+      
+      # filter with limit/offset
+      if params[:page].present? and params[:per_page].present?
+        page = params[:page].to_i
+        per_page = params[:per_page].to_i
+        offset = (page > 0 ? (page-1)*per_page : 0)
+        limit = per_page
+        
+        query = query.limit(limit).offset(offset)
+      end
+      
       return query
     end
 
