@@ -152,28 +152,40 @@
         </div>
     </div>
 </div>
-<% if get_columns(params).include?("total") or get_columns(params).include?("discount") or get_columns(params).include?("total_amount") or get_columns(params).include?("price") %>
-  <div class="table-footer">
-      <div class="line">
-          <label>Tổng số lượng:</label>
-          <span class="text-right"><%= @order.items_count %></span>
-      </div>
-      <div class="line">
-          <label>Cộng tiền hàng:</label>
-          <span class="text-right"><%= format_number(@order.total_without_tax) %></span>
-      </div>
-      <div class="liner">
-          <label>Tiền thuế (<%= format_number(@order.tax_percentage) %>%):</label>
-          <span class="text-right"><%= format_number(@order.tax_amount) %></span>
-      </div>
-      <div class="line">
-          <label>Tổng tiền thanh toán:</label>
-          <span class="text-right"><%= format_number(@order.cache_total, false, true) %></span>
-      </div>
-  </div>
+<% if get_columns(params).include?("total") or get_columns(params).include?("discount") or
+      get_columns(params).include?("total_amount") or get_columns(params).include?("price") or
+      get_columns(params).include?("quantity") %>
+    <div class="table-footer">
+        <% if get_columns(params).include?("quantity") %>
+            <div class="line">
+                <label>Tổng số lượng:</label>
+                <span class="text-right"><%= @order.items_count %></span>
+            </div>
+        <% end %>
+        
+        <% if get_columns(params).include?("total_amount") %>
+            <div class="line">
+                <label>Cộng tiền hàng:</label>
+                <span class="text-right"><%= format_number(@order.total_without_tax) %></span>
+            </div>
+        <% end %>
+        
+        <% if get_columns(params).include?("total") %>
+            <div class="liner">
+                <label>Tiền thuế (<%= format_number(@order.tax_percentage) %>%):</label>
+                <span class="text-right"><%= format_number(@order.tax_amount) %></span>
+            </div>
+            <div class="line">
+                <label>Tổng tiền thanh toán:</label>
+                <span class="text-right"><%= format_number(@order.cache_total, false, true) %></span>
+            </div>
+        <% end %>
+    </div>
 <% end %>
 <div class="mt-5 text-small">
-    Tổng số tiền (bằng chữ): <strong><%= docso(@order.cache_total.round(0)) %></strong>
+    <% if get_columns(params).include?("in_words") %>
+      Tổng số tiền (bằng chữ): <strong><%= docso(@order.cache_total.round(0)) %></strong>
+    <% end %>
     <br>
     <table>
       <tr>
