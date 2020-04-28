@@ -75,7 +75,14 @@
                                     label: t('.customer'),
                                     placeholder: t('.select_customer'),
                                     url: erp_contacts.dataselect_backend_contacts_path(format: 'json', is_customer: true,
-                                        contact_id: Erp::Contacts::Contact.get_main_contact.id),
+                                        contact_id: Erp::Contacts::Contact.get_main_contact.id,
+                                        contact_group_id: [Erp::Contacts::ContactGroup::GROUP_HOSPITAL,
+                                        Erp::Contacts::ContactGroup::GROUP_COMPANY,
+                                        Erp::Contacts::ContactGroup::GROUP_CLINIC,
+                                        Erp::Contacts::ContactGroup::GROUP_PHARMACY,
+                                        Erp::Contacts::ContactGroup::GROUP_RETAIL_CUSTOMER,
+                                        Erp::Contacts::ContactGroup::GROUP_STAFF]
+                                    ),
                                     create: {
                                         url: erp_contacts.new_backend_contact_path(contact_type: Erp::Contacts::Contact::TYPE_PERSON),
                                         title: t('.create_contact'),
