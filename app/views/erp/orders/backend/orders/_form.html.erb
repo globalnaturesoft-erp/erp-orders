@@ -367,15 +367,19 @@
     <% if order.sales? %>
         <input type='submit' class="btn green-seagreen one_click_btn" name="act_save_with_default" value="<%= t('.save') %>" />
         <input type='submit' class="btn green-seagreen one_click_btn" name="act_save_with_checking" value="<%= t('.save_and_stock_checking') %>" />
+        <%= erp_component('button/cancel', {
+            text: t('.cancel'),
+            href: erp_sales.backend_sales_orders_path
+        }) %>
     <% end %>
     <% if order.purchase? %>
         <%= erp_component('button/save', {
             text: t('.submit'),
             class: 'one_click_btn'
         }) %>
+        <%= erp_component('button/cancel', {
+            text: t('.cancel'),
+            href: erp_purchase.backend_purchase_orders_path
+        }) %>
     <% end %>
-    <%= erp_component('button/cancel', {
-        text: t('.cancel'),
-        href: erp_orders.backend_orders_path
-    }) %>
 <% end %>
