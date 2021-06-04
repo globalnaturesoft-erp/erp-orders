@@ -698,6 +698,7 @@ module Erp::Orders
 			str << supplier_name.to_s.downcase.strip if purchase?
 			str << warehouse_name.to_s.downcase.strip
 			str << employee_name.to_s.downcase.strip
+			str << note.to_s.downcase.strip
 			str << cache_total.to_s
 			order_details.each do |od|
         str << od.product_name.to_s.downcase.strip
