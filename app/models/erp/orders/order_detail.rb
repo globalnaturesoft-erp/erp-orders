@@ -172,8 +172,9 @@ module Erp::Orders
       return query
     end
 
-    def delivered_quantity
-			if order.sales?
+    # [Virtual] Quantity of goods delivered (Includes: Hoàn kho. Nghĩa là xuất và nhập cân bằng)
+    def virtual_delivered_quantity
+			if order.present? and order.sales?
 				import_quantity = self.delivered_delivery_details
 													.where(erp_qdeliveries_deliveries: {delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_IMPORT})
 													.sum('erp_qdeliveries_delivery_details.quantity')
@@ -181,7 +182,7 @@ module Erp::Orders
 													.where(erp_qdeliveries_deliveries: {delivery_type: Erp::Qdeliveries::Delivery::TYPE_SALES_EXPORT})
 													.sum('erp_qdeliveries_delivery_details.quantity')
 				return export_quantity - import_quantity
-			elsif order.purchase?
+			elsif order.present? and order.purchase?
 				import_quantity = self.delivered_delivery_details
 													.where(erp_qdeliveries_deliveries: {delivery_type: Erp::Qdeliveries::Delivery::TYPE_PURCHASE_IMPORT})
 													.sum('erp_qdeliveries_delivery_details.quantity')
