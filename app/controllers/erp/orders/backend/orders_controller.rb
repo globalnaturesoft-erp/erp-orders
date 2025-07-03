@@ -40,7 +40,7 @@ module Erp
         # GET /orders/1
         def pdf
           authorize! :print, @order
-          
+
           @type = @order.sales? ? Erp::Orders::Order::TYPE_SALES_ORDER : Erp::Orders::Order::TYPE_PURCHASE_ORDER
 
           respond_to do |format|
@@ -89,7 +89,7 @@ module Erp
           else
             @order.customer_id = @owner.id
           end
-          @order.payment_for = Erp::Orders::Order::PAYMENT_FOR_ORDER
+          @order.payment_for = Erp::Orders::Order::PAYMENT_FOR_CONTACT
 
           # Import details list from stocking importing page
           if params[:products].present?
@@ -106,7 +106,7 @@ module Erp
               )
             end
           end
-          
+
           authorize! :create, @order
 
           if request.xhr?
@@ -126,9 +126,9 @@ module Erp
         # POST /orders
         def create
           @order = Order.new(order_params)
-          
+
           authorize! :create, @order
-          
+
           @order.creator = current_user
 
           if @order.save
@@ -190,7 +190,7 @@ module Erp
           else
             #@order.set_draft
           end
-          
+
           # store old contact for updating cache
           prev_customer = nil
           prev_supplier = nil
@@ -200,7 +200,7 @@ module Erp
           if @order.update(order_params)
             # update cache
             @order.update_cache_delivery_status
-            
+
             # update cache for old contact
             prev_customer.update_cache_sales_debt_amount if (prev_customer.present? and @order.customer != prev_customer)
             prev_supplier.update_cache_purchase_debt_amount if (prev_supplier.present? and @order.supplier != prev_supplier)
@@ -287,25 +287,25 @@ module Erp
             }
           end
         end
-        
+
         def ajax_employee_field
           @customer = Erp::Contacts::Contact.where(id: params[:datas][0]).first
           @supplier = Erp::Contacts::Contact.where(id: params[:datas][1]).first
-          
+
           @employee = Erp::User.new
-          
+
           if params[:employee_id].present?
             @employee = Erp::User.find(params[:employee_id])
           else
             if @customer.present? and @customer.salesperson_id.present?
               @employee = Erp::User.find(@customer.salesperson_id)
             end
-            
+
             if @supplier.present? and @supplier.salesperson_id.present?
               @employee = Erp::User.find(@supplier.salesperson_id)
             end
           end
-          
+
           render layout: false
         end
 
